@@ -1,0 +1,104 @@
+<html>
+  <head>
+    <title>Structural Tension</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css"></link>
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"></link>
+     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+     <link rel="stylesheet" href="/static/side-menu.css"></link>
+     <link rel="stylesheet" href="/static/style.css"></link>
+   </head>
+   <body>
+     @(define parent-id (entry-id (entry-parent a-entry)))
+     @(define crc (entry-crc a-entry))
+     @(define title (entry-title a-entry))
+     <div id="layout" class="">
+       <a id="menuLink" class="menu-link" href="#menu">
+         <span></span>
+       </a>
+      <div id="menu" class="">
+        <div id="pure-menu pure-menu-open">
+          <a class="pure-menu-heading" href="/">
+            Structural Tension
+          </a>
+          <ul>
+            <li class=" ">
+              <a href="/">Back to Top</a>
+            </li>
+            @(if (and (string? parent-id) (string=? parent-id "NULL"))
+	    @list{}
+	    @list{ 
+	    <li class=" ">
+              <a href="/c/@(entry-crc (entry-parent a-entry))">Up One Level</a>
+            </li>
+	    })
+          </ul>
+        </div>
+      </div>
+      <div id="main">
+        <div id="header">
+          <h1>Structural Tension</h1>
+          <h2>A test in dogfooding</h2>
+        </div>
+        <div id="entry" class="pure-g" data-crc="@crc">
+          <div class="title pure-u-1">
+            <a class="pure-button" id="show-edit">
+              <i class="fa fa-pencil"></i>
+            </a>
+            <h2>@title </h2>
+            <form class="pure-form" id="edit-form" action="/" method="post">
+              <legend>Edit title</legend>
+              <input type="text" name="title" value="@title" />
+              <input type="hidden" name="id" value="@crc" />
+              <input type="submit" class="pure-button pure-button-primary" value="Submit" />
+            </form>
+          </div>
+          <hr>
+          <div class="add pure-u-1">
+            <form class="pure-form pure-u" action="/" method="post">
+              <label for="add">Create new child entry:</label> 
+              <input type="text" name="add" size="30" /> 
+              <button type="submit" class="pure-button pure-button-primary">Add</button> 
+              <input type="hidden" name="id" value="@crc" />
+            </form>
+          </div>
+          <div class="ideal pure-u-1">
+            <a class="pure-button" id="show-edit">
+              <i class="fa fa-pencil"></i>
+            </a>
+            <h3>Ideal</h3>
+            <form class="pure-form pure-u" id="edit-form" action="/" method="post">
+              <legend>Edit ideal reality</legend>
+              <textarea name="ideal">@(entry-ideal a-entry)</textarea>
+              <input type="hidden" name="id" value="@crc" />
+              <div class="pure-controls">
+                <input type="submit" class="pure-button pure-button-primary" value="Submit" />
+              </div>
+            </form>
+            <p class="content">@(entry-ideal a-entry)</p>
+          </div>
+          <ul id="step-list">
+	    @in[e (entry-children a-entry)]{ @(show-step e) }
+          </ul>
+          <div class="real pure-u-1">
+            <a class="pure-button" id="show-edit">
+              <i class="fa fa-pencil"></i>
+            </a>
+            <h3>Real</h3>
+            <form class="pure-form pure-u" id="edit-form" action="/" method="post">
+              <legend>Edit current reality</legend>
+              <textarea name="real">@(entry-real a-entry)</textarea>
+              <input type="hidden" name="id" value="@crc" />
+              <div class="pure-controls">
+                <input type="submit" class="pure-button pure-button-primary" value="Submit" />
+              </div>
+            </form>
+            <p class="content">@(entry-real a-entry)</p>
+          </div>
+        </div>
+      </div>
+      <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script> 
+      <script src="http://code.jquery.com/ui/1.11.1/jquery-ui.js"></script> 
+      <script src="/static/st.js"></script>
+  </body>
+</html>

@@ -1,0 +1,62 @@
+@(define ecrc (entry-crc a-entry))
+@(define etitle (entry-title a-entry))
+@(define eduedate (entry-due-date a-entry))
+@(define id (string-append "step_" (number->string (entry-ord a-entry))))
+
+<li class="step pure-u-1" id="@id">
+  <div class="editbar">
+    <a class="pure-button" id="step-move">
+      <i class="fa fa-sort"></i>
+    </a>
+    
+    <a class="pure-button" href="/c/@ecrc">
+      <i class="fa fa-binoculars"></i>
+    </a>
+    
+    <a class="pure-button" id="show-edit">
+      <i class="fa fa-pencil"></i>
+    </a>
+
+    <div class="delete">
+      <button class="pure-button">
+        <i class="fa fa-trash"></i>
+      </button>
+    </div>
+  </div>
+  <div class="step-main">
+    <p>@etitle </p>
+    @(if (string=? eduedate "")
+    @list{}
+    @list{
+    <p>Due: @eduedate </p>
+    })
+    
+    <!-- Editable things: Title, due date -->
+    <form class="pure-form pure-form-aligned" id="edit-form" action="/" method="post">
+      <fieldset>
+        <legend>Edit Step</legend>
+        <div class="pure-control-group">
+          <label for="title">Title</label> 
+          <input type="text" name="title" value="@etitle"/>
+        </div>
+        <div class="pure-control-group">
+          <label for="duedate">Due Date</label>
+          <input type="text" class="datepicker" name="duedate" value="@eduedate"/>
+        </div>
+        <div class="pure-controls">
+          <input type="hidden" name="id" value="@ecrc"/>
+          <button class="pure-button pure-button-primary" type="submit">Submit</button>
+        </div>
+      </fieldset>
+    </form>
+
+    <!-- Delete form -->
+    <form class="pure-form" id="delete-form" action="/" method="post">
+      <legend>Delete Step</legend>
+      <label>Are you sure you want to delete this step? You will also delete all its children.<br><br></label>
+      <input type="hidden" name="id" value="@ecrc">
+      <input type="hidden" name="delete" value="@ecrc">
+      <button class="pure-button pure-button-primary" type="submit">Delete</button>
+    </form>
+  </div>
+</li>
