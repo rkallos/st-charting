@@ -9,7 +9,8 @@
          ; net/uri-codec
          racket/runtime-path
          web-server/formlets
-         racket/date)
+         racket/date
+         json)
 
 (require "model.rkt"
          "crc32.rkt")
@@ -39,6 +40,7 @@
    [("") show-index]
    [("") #:method "post" process-edit]
    [("edit") #:method "post" process-edit]
+   [("reorder") #:method "post" process-reorder]
    [("c" (string-arg)) show-entry]
    ; TODO: Add api dispatcher for JSON
    [else not-found]))
@@ -116,6 +118,33 @@
          (entry-set-real! a-entry v)
          (redirect-to (entry-url a-entry)))])))
 
+; process-reorder: request -> response
+(define (process-reorder req)
+  (local
+    [; Store hash map of received JSON object
+     (define json (bytes->jsexpr (request-post-data/raw req)))
+     ; Create pairs of entries and their order from the database
+     (define order (for/list ([e (hash-ref json 'order)])
+                     (cons (hash-ref *ids-hash* e) (entry-ord (hash-ref *ids-hash* e)))))]
+    ; Print something marginally useful
+    (display (map (lambda (e)
+                    (cons (entry-title (car e)) (cdr e))) order))
+    (newline)
+    ; Iterate through order
+    (for/list ([e order]
+               [i (range (length order) 0 -1)])
+      ; Compare db-order value to array position from JSON
+      ; When they are not equal, update the database with the proper value
+      (when (not (= (cdr e) i))
+        (display (format "~a -> ~a~n" (cdr e) i))
+        (entry-set-ord! (car e) (number->string i))))
+    ; Return an empty response saying things went well
+    (response/full 200 #"Okay"
+                   (current-seconds)
+                   TEXT/HTML-MIME-TYPE
+                   empty
+                   empty)))
+
 ; entry-template: entry -> template
 ; Template for rendering an entry
 (define (show-template a-entry)
@@ -170,5 +199,5 @@
                  #:launch-browser? #f ; Change when deploying
                  #:stateless? #t))
 
-;(start-server)
+(start-server)
 

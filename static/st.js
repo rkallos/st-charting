@@ -26,7 +26,20 @@ $( document ).ready(function() {
     // Sortable steps
     $('#step-list').sortable({
         handle : '#step-move',
-        placeholder : "sorting"
+        placeholder : "sorting",
+        // Add AJAX callback here
+        update : function(event, ui) {
+            // POST to server
+            $.ajax({
+								dataType: "json",
+								data: JSON.stringify({
+									order: $(this).sortable('toArray'),
+									parent: $('#entry').data('crc'),
+									}),
+                type: 'POST',
+                url: '/reorder',
+            });
+				}
     });
     
     console.log( 'DOM ready!' );

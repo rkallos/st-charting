@@ -1,9 +1,9 @@
 @(define ecrc (entry-crc a-entry))
 @(define etitle (entry-title a-entry))
 @(define eduedate (entry-due-date a-entry))
-@(define id (string-append "step_" (number->string (entry-ord a-entry))))
+@(define id (string-append "step_" ecrc))
 
-<li class="step pure-u-1" id="@id">
+<li class="step pure-u-1" id="@ecrc">
   <div class="editbar">
     <a class="pure-button" id="step-move">
       <i class="fa fa-sort"></i>

@@ -58,7 +58,8 @@
                            #:ideal [ideal ""]
                            #:real [real ""]
                            #:due_date [due_date ""]
-                           #:pid [pid ""])
+                           #:pid [pid ""]
+                           #:ord [ord ""])
   (local [; cmd: The SQL query to update an entry, with a conditional number of columns to update.
           (define cmd
             (string-append
@@ -77,7 +78,10 @@
                  (string-append "due_date=\"" due_date "\", "))
              (if (string=? pid "")
                  ""
-                 (string-append "pid=\"" pid "\", "))))]
+                 (string-append "pid=\"" pid "\", "))
+             (if (string=? ord "")
+                 ""
+                 (string-append "ord=\"" ord "\", "))))]
     (query-exec
      (entries-db (entry-table a-entry))
      ; Check for and remove trailing comma from cmd
@@ -108,6 +112,10 @@
 (define (entry-set-pid! a-entry a-val)
   (entry-edit-entry! a-entry
                       #:pid a-val))
+
+(define (entry-set-ord! a-entry a-val)
+  (entry-edit-entry! a-entry
+                     #:ord a-val))
 
 ; entries-entries : entries -> (listof entry)
 ; returns (listof entry) in the table a-entries
