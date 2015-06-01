@@ -16,14 +16,22 @@
   (define db (sqlite3-connect #:database home #:mode 'create))
   (define the-chart (entries db))
   (unless (table-exists? db "entries")
-    (query-exec db
-                (string-append
-                 "CREATE TABLE entries "
-                 "(id INTEGER PRIMARY KEY, title TEXT, ideal TEXT, real TEXT, "
-                 "created_date TEXT, due_date TEXT, pid INTEGER, ord INTEGER)"))
-    (entries-insert-entry!
-     the-chart "Top-level Chart" "Ideal" "Real"
-     (current-seconds) "NULL" "NULL" "NULL"))
+	  (begin 
+	    (query-exec db
+			(string-append
+			 "CREATE TABLE entries "
+			 "(id INTEGER PRIMARY KEY, title TEXT, ideal TEXT, real TEXT, "
+			 "created_date TEXT, due_date TEXT, pid INTEGER, ord INTEGER)"
+			 ))
+	    (query-exec db
+			(string-append
+			 "CREATE TABLE users "
+			 "(id INTEGER PRIMARY KEY, name TEXT, email TEXT, passowrd TEXT,"
+			 "created_date TEXT, active BOOLEAN, root_id INTEGER, FOREIGN KEY(root_id) REFERENCES entries(id))"
+			 )))
+	  (entries-insert-entry!
+	   the-chart "Top-level Chart" "Ideal" "Real"
+	   (current-seconds) "NULL" "NULL" "NULL"))
   the-chart)
 
 ; entry-insert-entry!: entries string*6 -> void
