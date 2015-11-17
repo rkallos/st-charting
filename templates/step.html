@@ -1,6 +1,7 @@
 @(define ecrc (entry-crc a-entry))
 @(define etitle (entry-title a-entry))
 @(define eduedate (entry-due-date a-entry))
+@(define edone-toggle (if (entry-done? a-entry) 0 1))
 @(define id (string-append "step_" ecrc))
 
 <li class="step pure-u-1" id="@ecrc">
@@ -12,7 +13,11 @@
     <a class="pure-button" href="/c/@ecrc">
       <i class="fa fa-binoculars"></i>
     </a>
-    
+
+    <a class="pure-button" id="step-complete">
+      <i class="fa fa-check-square-o"></i>
+    </a>
+
     <a class="pure-button" id="show-edit">
       <i class="fa fa-pencil"></i>
     </a>
@@ -36,7 +41,7 @@
       <fieldset>
         <legend>Edit Step</legend>
         <div class="pure-control-group">
-          <label for="title">Title</label> 
+          <label for="title">Title</label>
           <input type="text" name="title" value="@etitle"/>
         </div>
         <div class="pure-control-group">
@@ -45,9 +50,19 @@
         </div>
         <div class="pure-controls">
           <input type="hidden" name="id" value="@ecrc"/>
+					<input type="hidden" name="change" value="1" />
           <button class="pure-button pure-button-primary" type="submit">Submit</button>
         </div>
       </fieldset>
+    </form>
+
+    <!-- Complete form -->
+    <form class="pure-form" id="complete-form" action="/" method="post">
+      <input type="hidden" name="id" value="@ecrc">
+      <input type="hidden" name="done" value="@edone-toggle">
+      <button class="pure-button pure-button-primary" type="submit">
+        <i class="fa fa-check-square-o"></i>
+      </button>
     </form>
 
     <!-- Delete form -->
